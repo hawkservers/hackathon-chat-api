@@ -1,13 +1,18 @@
 {
   "app": {
     "address": "0.0.0.0",
-    "port": 3000
+    "port": 4000
   },
-  "Mysql": {
+  "mysql": {
     "host": "localhost",
-    "user": "stubbo",
-    "password": "Password1",
-    "database": "webrtc",
+    "user": "root",
+    "password": "",
+    "database": "hackathon",
     "port": 3306
+  },
+  "github": {
+    "clientID": "0ecc9a3b440252b91461",
+    "clientSecret": "265035cecaa749657558b2da91e7c44a469c7878",
+    "callbackURL": "http://localhost:4000/login/callback"
   }
 }

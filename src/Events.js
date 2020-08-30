@@ -1,66 +1,45 @@
 import {createServer} from 'http';
 import * as socketIo from 'socket.io';
-import uuid from 'uuid';
-import {
-  adjectives, animals, colors, countries, uniqueNamesGenerator
-} from "unique-names-generator";
+import {adjectives, colors, uniqueNamesGenerator} from "unique-names-generator";
+import User from "./Database/Models/User";
+import Events from './Events/index';
 
 /**
  * @param {Express} app
  */
 export default function loadSocket(app) {
   const server = createServer(app);
-  const io = socketIo(server);
+  const io = socketIo.listen(server);
 
-  const lobbies = new Map();
-  const connectedUsers = new Map();
+  io.on('connection', async (socket) => {
+    let {token} = socket.handshake.query;
+    let user = await User.findOne({where: {auth_token: token}});
+    if (user) {
+      user = {
+        id: user.id,
+        username: user.username,
+        avatar: user.avatar
+      }
+    } else {
+      user = {
+        username: uniqueNamesGenerator({
+          dictionaries: [adjectives, colors]
+        })
+      }
+    }
 
-  io.on('connection', (socket) => {
-    socket.on('authorize', () => {
-      // todo: use data to auth a logged in user else make a guest
+    // Load events
+    for (let event in Events) {
+      if (!Events.hasOwnProperty(event)) continue;
 
-      socket.uid = uuid.v4();
+      let func = Events[event];
+      if (!func) continue;
 
-      connectedUsers.set(socket.uid, {
-        nickname: uniqueNamesGenerator({
-          dictionaries: [animals, adjectives, colors, countries]
-        }),
-        lobby: null,
+      socket.on(event, (...args) => {
+        func(io, socket, user, ...args);
       });
-
-
-      // Lobby events
-
-      // Creating a lobby
-      socket.on('lobby.create', (data) => {
-        // Lets not allow more than one lobby with the same identifier
-        if (typeof data.lobby !== "string" && !lobbies.has(data.lobby)) {
-          return socket.emit('lobby.create', {
-            error: {
-              message: 'A lobby with that name already exists.',
-              data: {
-                lobby: data.lobby
-              }
-            }
-          });
-        }
-
-        const user = connectedUsers.get(socket.uid);
-        user.lobby = data.lobby;
-
-        connectedUsers.set(socket.uid, user);
-        lobbies.set(data.lobby, {
-          users: [socket.uid],
-          password: data.password ?? null,
-        });
-
-        socket.join(data.lobby);
-      });
-
-      // Join a lobby
-      socket.on('lobby.join', (data) => {
-        // todo add lobby join things
-      });
-    });
+    }
   });
+
+  server.listen(6969);
 }
