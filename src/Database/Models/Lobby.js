@@ -16,12 +16,13 @@ Lobby.init({
   },
   private: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
+    defaultValue: false,
+    allowNull: false
   },
   password: {
     type: DataTypes.STRING,
     allowNull: true
   }
-}, {sequelize: Connection, modelName: "lobby"});
+}, {sequelize: Connection, modelName: "lobby", createdAt: "created_at", updatedAt: "updated_at"});
 
 export default Lobby;

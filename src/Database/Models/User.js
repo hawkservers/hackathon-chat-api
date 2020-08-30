@@ -12,6 +12,6 @@ User.init({
   username: DataTypes.STRING,
   avatar: DataTypes.STRING,
   auth_token: DataTypes.STRING
-}, {sequelize: Connection, modelName: "user"});
+}, {sequelize: Connection, modelName: "user", createdAt: "created_at", updatedAt: "updated_at"});
 
 export default User;

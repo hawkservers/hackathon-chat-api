@@ -20,9 +20,9 @@ export default async (io, socket, user, data) => {
 
   const lobby = await Lobby.create({
     slug: data.slug,
-    private: data.private,
+    private: data.private || false,
     password: data.password
   });
 
-  socket.join(lobby.id);
+  socket.emit('lobby.join', lobby.slug);
 }

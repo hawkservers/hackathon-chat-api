@@ -23,5 +23,6 @@ export default async (io, socket, user, data) => {
     return;
   }
 
-  console.log('Joining lobby: ' + lobby.id);
+  socket.join(lobby.id);
+  socket.emit('lobby.join', lobby.slug);
 }

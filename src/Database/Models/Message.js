@@ -24,7 +24,7 @@ Message.init({
     allowNull: false,
     references: {
       model: "lobbies",
-      key: "od"
+      key: "id"
     }
   },
   message: {

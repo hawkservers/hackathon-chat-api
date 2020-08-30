@@ -23,7 +23,9 @@ export default function loadSocket(app) {
     } else {
       user = {
         username: uniqueNamesGenerator({
-          dictionaries: [adjectives, colors]
+          dictionaries: [adjectives, colors],
+          style: "capital",
+          separator: ""
         })
       }
     }
