@@ -1,7 +1,8 @@
 {
   "app": {
     "address": "0.0.0.0",
-    "port": 4000
+    "port": 4000,
+    "ws_port": 6969
   },
   "mysql": {
     "host": "localhost",
@@ -13,6 +14,12 @@
   "github": {
     "clientID": "0ecc9a3b440252b91461",
     "clientSecret": "265035cecaa749657558b2da91e7c44a469c7878",
-    "callbackURL": "http://localhost:4000/login/callback"
+    "callbackURL": "http://localhost:4000/auth/github"
+  },
+  "discord": {
+    "clientID": "735110802633261076",
+    "clientSecret": "1Yu2Pr7JGeyS_TneMwg-t5nP1-xw1fPv",
+    "callbackURL": "http://localhost:4000/auth/discord",
+    "scope": ["identify"]
   }
 }

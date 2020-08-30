@@ -14,15 +14,24 @@ import Lobby from "../Database/Models/Lobby";
 export default async (io, socket, user, data) => {
   const lobby = await Lobby.findOne({where: {slug: data.lobby}});
   if (!lobby) {
-    console.error('Lobby not found!');
+    socket.emit('notify', {
+      type: 'danger',
+      message: 'A lobby with this slug does not exist.'
+    });
     return;
   }
 
   if (lobby.private && (lobby.password !== data.password)) {
-    console.error('Passwords don\'t match!');
+    socket.emit('notify', {
+      type: 'danger',
+      message: 'Invalid password.'
+    })
     return;
   }
 
   socket.join(lobby.id);
-  socket.emit('lobby.join', lobby.slug);
+  socket.emit('lobby.join', {
+    success: true,
+    slug: lobby.slug
+  });
 }

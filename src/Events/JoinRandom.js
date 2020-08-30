@@ -1,12 +1,18 @@
 import Lobby from "../Database/Models/Lobby";
-import {fn} from "sequelize";
+import {fn, literal} from "sequelize";
 
 export default async (io, socket, user, data) => {
-  const randomLobby = await Lobby.findOne({where: {private: false}});
+  const randomLobby = await Lobby.findOne({where: {private: false}, order: literal('RAND()')});
   if (!randomLobby) {
-    console.error('No lobbies were found!');
+    socket.emit('notify', {
+      type: 'danger',
+      message: 'No lobbies were found!'
+    });
     return;
   }
 
-  socket.emit('lobby.join', randomLobby.slug);
+  socket.emit('lobby.join', {
+    success: true,
+    slug: randomLobby.slug
+  });
 }

@@ -14,6 +14,10 @@ Lobby.init({
     allowNull: false,
     unique: true
   },
+  name: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
   private: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

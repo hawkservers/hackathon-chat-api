@@ -14,7 +14,10 @@ import Lobby from "../Database/Models/Lobby";
  */
 export default async (io, socket, user, data) => {
   if (typeof data.slug !== "string" || (await Lobby.findOne({where: {slug: data.slug}}))) {
-    console.error('Lobby already exists');
+    socket.emit('notify', {
+      type: 'danger',
+      message: 'A lobby with this name already exists!'
+    });
     return;
   }
 
@@ -24,5 +27,8 @@ export default async (io, socket, user, data) => {
     password: data.password
   });
 
-  socket.emit('lobby.join', lobby.slug);
+  socket.emit('lobby.join', {
+    success: true,
+    slug: lobby.slug
+  });
 }

@@ -3,6 +3,7 @@ import * as socketIo from 'socket.io';
 import {adjectives, colors, uniqueNamesGenerator} from "unique-names-generator";
 import User from "./Database/Models/User";
 import Events from './Events/index';
+import {app as Config} from "../config.json";
 
 /**
  * @param {Express} app
@@ -13,14 +14,8 @@ export default function loadSocket(app) {
 
   io.on('connection', async (socket) => {
     let {token} = socket.handshake.query;
-    let user = await User.findOne({where: {auth_token: token}});
-    if (user) {
-      user = {
-        id: user.id,
-        username: user.username,
-        avatar: user.avatar
-      }
-    } else {
+    let user = await User.findOne({where: {auth_token: token}, attributes: {exclude: ['auth_token']}});
+    if (!user) {
       user = {
         username: uniqueNamesGenerator({
           dictionaries: [adjectives, colors],
@@ -29,6 +24,8 @@ export default function loadSocket(app) {
         })
       }
     }
+
+    socket.emit('user', user);
 
     // Load events
     for (let event in Events) {
@@ -43,5 +40,5 @@ export default function loadSocket(app) {
     }
   });
 
-  server.listen(6969);
+  server.listen(Config.ws_port);
 }
