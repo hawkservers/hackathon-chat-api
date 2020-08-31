@@ -25,4 +25,5 @@ export default async (io, socket, user, data) => {
   });
 
   socket.emit('lobby.join', lobby.slug);
+  socket.emit('lobby.created', lobby.slug);
 }

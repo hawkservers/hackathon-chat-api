@@ -30,6 +30,15 @@ export default function loadSocket(app) {
       }
     }
 
+    // started moving it here because it wasnt working and was running out of time
+    socket.on('peer', (data) => {
+      if (!data) {
+        return;
+      }
+      user.peer = data;
+      socket.emit('peer');
+    })
+
     // Load events
     for (let event in Events) {
       if (!Events.hasOwnProperty(event)) continue;

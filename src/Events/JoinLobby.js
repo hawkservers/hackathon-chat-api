@@ -25,4 +25,9 @@ export default async (io, socket, user, data) => {
 
   socket.join(lobby.id);
   socket.emit('lobby.join', lobby.slug);
+  socket.to(lobby.id).emit('lobby.user.join', user);
+
+  socket.on('disconnect', () => {
+    socket.to(lobby.id).emit('lobby.user.disconnected', user);
+  });
 }

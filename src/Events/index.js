@@ -7,5 +7,5 @@ export default {
   "chat.message": ChatMessage,
   "lobby.create": LobbyCreate,
   "lobby.random": JoinRandom,
-  "lobby.join": JoinLobby
+  "lobby.join": JoinLobby,
 };
